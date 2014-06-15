@@ -163,26 +163,28 @@ median(fdSteps$Steps)
 
 
 ```r
-stepsByDate$Day <- weekdays(as.Date(stepsByDate$Date))
-stepsByDate$WD <- stepsByDate$Day
-for(i in 1:nrow(stepsByDate)) {
-  if(stepsByDate$Day[i] == "Saturday" || stepsByDate$Day[i] == "Sunday")
-    stepsByDate$WD[i] <- "Weekend"
+rawData$Day <- weekdays(as.Date(rawData$date))
+rawData$WD <- rawData$Day
+for(i in 1:nrow(rawData)) {
+  if(rawData$Day[i] == "Saturday" || rawData$Day[i] == "Sunday")
+    rawData$WD[i] <- "Weekend"
   else
-    stepsByDate$WD[i] <- "Weekday"
+    rawData$WD[i] <- "Weekday"
 }
 
-head(stepsByDate)
+stepsByWeekday <- aggregate(rawData$steps,by=list(Interval=rawData$interval, WD = rawData$WD),na.rm=TRUE,FUN=mean)
+names(stepsByWeekday) <- c("Interval", "Weekday", "Steps")
+head(stepsByWeekday)
 ```
 
 ```
-##         Date Steps       Day      WD
-## 1 2012-10-01     0    Monday Weekday
-## 2 2012-10-02   126   Tuesday Weekday
-## 3 2012-10-03 11352 Wednesday Weekday
-## 4 2012-10-04 12116  Thursday Weekday
-## 5 2012-10-05 13294    Friday Weekday
-## 6 2012-10-06 15420  Saturday Weekend
+##   Interval Weekday  Steps
+## 1        0 Weekday 2.3333
+## 2        5 Weekday 0.4615
+## 3       10 Weekday 0.1795
+## 4       15 Weekday 0.2051
+## 5       20 Weekday 0.1026
+## 6       25 Weekday 1.5128
 ```
 
 * Plot steps by type of day
@@ -190,7 +192,7 @@ head(stepsByDate)
 
 ```r
 library(lattice)
-with(stepsByDate, xyplot(Steps ~ Date | WD, type="l", layout=c(1,2)))
+with(stepsByWeekday, xyplot(Steps ~ Interval | Weekday, type="l", layout=c(1,2)))
 ```
 
 ![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11.png) 

@@ -82,21 +82,23 @@ median(fdSteps$Steps)
 ## Are there differences in activity patterns between weekdays and weekends?
 
 ```{r}
-stepsByDate$Day <- weekdays(as.Date(stepsByDate$Date))
-stepsByDate$WD <- stepsByDate$Day
-for(i in 1:nrow(stepsByDate)) {
-  if(stepsByDate$Day[i] == "Saturday" || stepsByDate$Day[i] == "Sunday")
-    stepsByDate$WD[i] <- "Weekend"
+rawData$Day <- weekdays(as.Date(rawData$date))
+rawData$WD <- rawData$Day
+for(i in 1:nrow(rawData)) {
+  if(rawData$Day[i] == "Saturday" || rawData$Day[i] == "Sunday")
+    rawData$WD[i] <- "Weekend"
   else
-    stepsByDate$WD[i] <- "Weekday"
+    rawData$WD[i] <- "Weekday"
 }
 
-head(stepsByDate)
+stepsByWeekday <- aggregate(rawData$steps,by=list(Interval=rawData$interval, WD = rawData$WD),na.rm=TRUE,FUN=mean)
+names(stepsByWeekday) <- c("Interval", "Weekday", "Steps")
+head(stepsByWeekday)
 ```
 
 * Plot steps by type of day
 
 ```{r}
 library(lattice)
-with(stepsByDate, xyplot(Steps ~ Date | WD, type="l", layout=c(1,2)))
+with(stepsByWeekday, xyplot(Steps ~ Interval | Weekday, type="l", layout=c(1,2)))
 ```
