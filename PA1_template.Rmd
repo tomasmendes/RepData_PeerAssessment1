@@ -3,18 +3,100 @@
 
 ## Loading and preprocessing the data
 
+* Parse raw data
 
+```{r}
+rawData <- read.csv("activity.csv")
+```
+
+* Aggregate sum of steps by date and mean of steps by interval accross dates
+
+```{r}
+stepsByDate <- aggregate(rawData$steps,by=list(Date=rawData$date),na.rm=TRUE,FUN=sum)
+names(stepsByDate) <- c("Date","Steps")
+head(stepsByDate)
+
+stepsByInterval <- aggregate(rawData$steps,by=list(Date=rawData$interval),na.rm=TRUE,FUN=mean)
+names(stepsByInterval) <- c("Interval","Steps")
+head(stepsByInterval)
+```
 
 ## What is mean total number of steps taken per day?
 
+```{r}
+hist(stepsByDate$Steps)
+```
+
+```{r}
+mean(stepsByDate$Steps)
+median(stepsByDate$Steps)
+```
 
 
 ## What is the average daily activity pattern?
 
+```{r}
+plot(stepsByInterval$Interval, stepsByInterval$Steps, type="l")
+```
+
+* The maximum number of average steps per interval is:
+
+```{r}
+stepsByInterval[stepsByInterval$Steps == max(stepsByInterval$Steps),]$Interval
+```
 
 
 ## Imputing missing values
 
+* The number of NAs is:
+
+```{r}
+sum(is.na(rawData$steps))
+```
+
+* Strategy for NA replacement: substituting NAs by the mean of that day
+
+```{r}
+filledData <- rawData
+
+for(i in 1:nrow(filledData)) {
+  if(is.na(filledData$steps[i])) {
+     filledData$steps[i] <- stepsByDate[stepsByDate$Date == filledData$date[i],]$Steps[1]
+  }
+}
+
+fdSteps <- aggregate(filledData$steps,by=list(Date=filledData$interval),FUN=mean)
+names(fdSteps) <- c("Interval","Steps")
+head(fdSteps)
+```
+
+* Histogram, mean and median of the new data
+
+```{r}
+hist(fdSteps$Steps)
+mean(fdSteps$Steps)
+median(fdSteps$Steps)
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r}
+stepsByDate$Day <- weekdays(as.Date(stepsByDate$Date))
+stepsByDate$WD <- stepsByDate$Day
+for(i in 1:nrow(stepsByDate)) {
+  if(stepsByDate$Day[i] == "Saturday" || stepsByDate$Day[i] == "Sunday")
+    stepsByDate$WD[i] <- "Weekend"
+  else
+    stepsByDate$WD[i] <- "Weekday"
+}
+
+head(stepsByDate)
+```
+
+* Plot steps by type of day
+
+```{r}
+library(lattice)
+with(stepsByDate, xyplot(Steps ~ Date | WD, type="l", layout=c(1,2)))
+```
