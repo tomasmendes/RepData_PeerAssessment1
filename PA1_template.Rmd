@@ -65,8 +65,8 @@ for(i in 1:nrow(filledData)) {
   }
 }
 
-fdSteps <- aggregate(filledData$steps,by=list(Date=filledData$interval),FUN=mean)
-names(fdSteps) <- c("Interval","Steps")
+fdSteps <- aggregate(filledData$steps,by=list(Date=filledData$date),FUN=sum)
+names(fdSteps) <- c("Date","Steps")
 head(fdSteps)
 ```
 

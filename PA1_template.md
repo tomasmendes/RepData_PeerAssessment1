@@ -118,19 +118,19 @@ for(i in 1:nrow(filledData)) {
   }
 }
 
-fdSteps <- aggregate(filledData$steps,by=list(Date=filledData$interval),FUN=mean)
-names(fdSteps) <- c("Interval","Steps")
+fdSteps <- aggregate(filledData$steps,by=list(Date=filledData$date),FUN=sum)
+names(fdSteps) <- c("Date","Steps")
 head(fdSteps)
 ```
 
 ```
-##   Interval   Steps
-## 1        0 1.49180
-## 2        5 0.29508
-## 3       10 0.11475
-## 4       15 0.13115
-## 5       20 0.06557
-## 6       25 1.81967
+##         Date Steps
+## 1 2012-10-01     0
+## 2 2012-10-02   126
+## 3 2012-10-03 11352
+## 4 2012-10-04 12116
+## 5 2012-10-05 13294
+## 6 2012-10-06 15420
 ```
 
 * Histogram, mean and median of the new data
@@ -147,7 +147,7 @@ mean(fdSteps$Steps)
 ```
 
 ```
-## [1] 32.48
+## [1] 9354
 ```
 
 ```r
@@ -155,7 +155,7 @@ median(fdSteps$Steps)
 ```
 
 ```
-## [1] 29.64
+## [1] 10395
 ```
 
 
