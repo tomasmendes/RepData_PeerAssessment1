@@ -39,7 +39,7 @@ median(stepsByDate$Steps)
 plot(stepsByInterval$Interval, stepsByInterval$Steps, type="l")
 ```
 
-* The maximum number of average steps per interval is:
+* The interval with a maximum number of average steps:
 
 ```{r}
 stepsByInterval[stepsByInterval$Steps == max(stepsByInterval$Steps),]$Interval

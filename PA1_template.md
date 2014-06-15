@@ -81,7 +81,7 @@ plot(stepsByInterval$Interval, stepsByInterval$Steps, type="l")
 
 ![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
 
-* The maximum number of average steps per interval is:
+* The interval with a maximum number of average steps:
 
 
 ```r
